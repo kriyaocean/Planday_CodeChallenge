@@ -43,7 +43,7 @@ namespace CarFactory_Domain
 
         private static string CreateString(int stringLength)
         {
-            var rd = new Random(((int) DateTime.Now.Ticks)/5*5);
+            var rd = new Random(((int)DateTime.Now.Ticks) / 5 * 5);
             char[] chars = new char[stringLength];
 
             for (int i = 0; i < stringLength; i++)

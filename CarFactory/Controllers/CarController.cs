@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using CarFactory.Enum;
 using CarFactory_Domain;
 using CarFactory_Factory;
 using Microsoft.AspNetCore.Http;
@@ -58,13 +59,13 @@ namespace CarFactory.Controllers
                     var baseColor = Color.FromName(spec.Specification.Paint.BaseColor);
                     switch (spec.Specification.Paint.Type)
                     {
-                        case "single":
+                        case PaintType.Single:
                             paint = new SingleColorPaintJob(baseColor);
                             break;
-                        case "strie":
+                        case PaintType.Stripe:
                             paint = new StripedPaintJob(baseColor, Color.FromName(spec.Specification.Paint.StripeColor));
                             break;
-                        case "dot":
+                        case PaintType.Dot:
                             paint = new DottedPaintJob(baseColor, Color.FromName(spec.Specification.Paint.DotColor));
                             break;
                         default:
@@ -94,7 +95,7 @@ namespace CarFactory.Controllers
 
         public class CarPaintSpecificationInputModel
         {
-            public string Type { get; set; }
+            public PaintType Type { get; set; }
             public string BaseColor { get; set; }
             public string? StripeColor { get; set; }
             public string? DotColor { get; set; }
