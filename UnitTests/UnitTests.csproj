@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoFixture" Version="4.17.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.17" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
     <PackageReference Include="Moq" Version="4.16.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.1.1" />
@@ -19,6 +21,7 @@
     <ProjectReference Include="..\CarFactory-Domain\CarFactory-Domain.csproj" />
     <ProjectReference Include="..\CarFactory-Engine\CarFactory-Engine.csproj" />
     <ProjectReference Include="..\CarFactory-Paint\CarFactory-Paint.csproj" />
+    <ProjectReference Include="..\CarFactory\CarFactory.csproj" />
   </ItemGroup>
 
 </Project>
