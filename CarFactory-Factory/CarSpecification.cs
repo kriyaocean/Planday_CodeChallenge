@@ -26,7 +26,7 @@ namespace CarFactory_Factory
 
         public class SpeakerSpecification
         {
-            public bool IsSubwoofer;
+            public SpeakerSpecType SpeakerType;
         }
     }
 }

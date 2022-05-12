@@ -4,8 +4,8 @@ using CarFactory_Factory;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using static CarFactory.Controllers.CarController;
+using static CarFactory_Factory.CarSpecification;
 
 namespace CarFactory.Helpers
 {
@@ -39,8 +39,8 @@ namespace CarFactory.Helpers
                         default:
                             throw new ArgumentException(string.Format("Unknown paint type %", spec.Specification.Paint.Type));
                     }
-                    var dashboardSpeakers = spec.Specification.FrontWindowSpeakers.Select(s => new CarSpecification.SpeakerSpecification { IsSubwoofer = s.IsSubwoofer });
-                    var doorSpeakers = new CarSpecification.SpeakerSpecification[0]; //TODO: Let people install door speakers
+                    var dashboardSpeakers = GetSpeakerSpecificationItems(spec.Specification.FrontWindowSpeakers);
+                    var doorSpeakers = GetSpeakerSpecificationItems(spec.Specification.DoorSpeakers);
                     var wantedCar = new CarSpecification(paint, spec.Specification.Manufacturer, spec.Specification.NumberOfDoors, doorSpeakers, dashboardSpeakers);
                     wantedCars.Add(wantedCar);
                 }
@@ -48,5 +48,22 @@ namespace CarFactory.Helpers
             return wantedCars;
         }
 
+        private static IEnumerable<SpeakerSpecification> GetSpeakerSpecificationItems(SpeakerSpecificationInputModel inputSpeakers)
+        {
+            if(inputSpeakers == null)
+                return new List<SpeakerSpecification>();
+
+            var speakerList = new List<SpeakerSpecification>();
+            for (int i = 0; i < inputSpeakers.NumberOfSubWoofers; i++)
+            {
+                speakerList.Add(new SpeakerSpecification { SpeakerType = SpeakerSpecType.SubWoofer });
+            }
+            for (int i = 0; i < inputSpeakers.Speakers.NumberOfSpeakers; i++)
+            {
+                speakerList.Add(new SpeakerSpecification { SpeakerType = inputSpeakers.Speakers.SpeakerType.Convert() });
+            }
+
+            return speakerList;
+        }
     }
 }

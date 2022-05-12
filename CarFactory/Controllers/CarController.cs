@@ -65,12 +65,20 @@ namespace CarFactory.Controllers
             public int NumberOfDoors { get; set; }
             public CarPaintSpecificationInputModel Paint { get; set; }
             public Manufacturer Manufacturer { get; set; }
-            public SpeakerSpecificationInputModel[] FrontWindowSpeakers { get; set; }
+            public SpeakerSpecificationInputModel FrontWindowSpeakers { get; set; }
+            public SpeakerSpecificationInputModel DoorSpeakers { get; set; }
         }
 
         public class SpeakerSpecificationInputModel
         {
-            public bool IsSubwoofer { get; set; }
+            public int NumberOfSubWoofers { get; set; }
+            public SpeakerInputModel Speakers { get; set; }
+        }
+
+        public class SpeakerInputModel
+        {
+            public int NumberOfSpeakers { get; set; }
+            public InputSpeakerType SpeakerType { get; set; }
         }
 
         public class BuildCarOutputModel{

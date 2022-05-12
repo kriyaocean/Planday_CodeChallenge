@@ -1,4 +1,6 @@
-﻿using CarFactory_Interior.Builders;
+﻿using CarFactory_Domain;
+using CarFactory_Factory;
+using CarFactory_Interior.Builders;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,17 +15,18 @@ namespace UnitTests
         public void SpeakerBuilder_CanBuildMoreThan2SpeakersOfCorrectType()
         {
             var sp = new SpeakerBuilder();
-            var result = sp.BuildFrontWindowSpeakers(new List<SpeakerSpecification>
+            var result = sp.BuildSpeakers(new List<SpeakerSpecification>
             {
-                new SpeakerSpecification { IsSubwoofer = true },
-                new SpeakerSpecification { IsSubwoofer = false },
-                new SpeakerSpecification { IsSubwoofer = false }
+                new SpeakerSpecification { SpeakerType = SpeakerSpecType.Standard },
+                new SpeakerSpecification { SpeakerType = SpeakerSpecType.Standard },
+                new SpeakerSpecification { SpeakerType = SpeakerSpecType.SubWoofer },
+                new SpeakerSpecification { SpeakerType = SpeakerSpecType.Normal }
             });
-            var isSub = result.Where(x => x.IsSubwoofer);
 
-            Assert.AreEqual(3, result.Count);
-            Assert.AreEqual(1, result.Where(x => x.IsSubwoofer).Count());
-            Assert.AreEqual(2, result.Where(x => !x.IsSubwoofer).Count());
+            Assert.AreEqual(4, result.Count);
+            Assert.AreEqual(1, result.Where(x => x is SubWoofer).Count());
+            Assert.AreEqual(2, result.Where(x => x is StandardSpeaker).Count());
+            Assert.AreEqual(1, result.Where(x => x is NormalSpeaker).Count());
         }
     }
 }

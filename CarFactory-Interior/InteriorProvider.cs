@@ -27,7 +27,8 @@ namespace CarFactory_Interior
             {
                 Dashboard = _dashboardBuilder.Build(),
                 Seats = _seatBuilder.Build(),
-                FrontWindowSpeakers = _speakerBuilder.BuildFrontWindowSpeakers(specification.FrontWindowSpeakers)
+                FrontWindowSpeakers = _speakerBuilder.BuildSpeakers(specification.FrontWindowSpeakers),
+                DoorSpeakers = _speakerBuilder.BuildSpeakers(specification.DoorSpeakers)
             };
         }
     }

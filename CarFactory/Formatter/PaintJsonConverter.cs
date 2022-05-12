@@ -4,7 +4,7 @@ using System;
 
 namespace CarFactory.Formatter
 {
-    public class CustomJsonConverter : JsonConverter
+    public class PaintJsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {

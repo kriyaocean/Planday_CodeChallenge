@@ -11,7 +11,7 @@ using static CarFactory.Controllers.CarController;
 namespace UnitTests
 {
     [TestClass]
-    public class TransformObjectHelperTests
+    public class TransformObjectHelper_PaintJob_Tests
     {
         private static readonly Fixture Fixture = new();
 

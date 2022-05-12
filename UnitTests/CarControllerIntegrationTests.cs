@@ -26,13 +26,8 @@ namespace UnitTests
         [TestMethod]
         public async Task CarController_Post_canHandle_PaintType_Stripe()
         {
-            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"Stripe\", \"baseColor\": \"Blue\", \"stripeColor\": \"Orange\", \"dotColor\": null }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": [ {\"isSubwoofer\": true }, { \"isSubwoofer\": false } ] } } ] }", Encoding.UTF8, "application/json"));
+            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"Stripe\", \"baseColor\": \"Blue\", \"stripeColor\": \"Orange\", \"dotColor\": null }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": { \"numberOfSubWoofers\": 2, \"speakers\": { \"numberOfSpeakers\": 5, \"speakerType\": \"Normal\" } } } } ] }", Encoding.UTF8, "application/json")); 
             var responseString = await response.Content.ReadAsStringAsync();
-
-            //var settings = new JsonSerializerSettings();
-            //settings.Converters.Add(new CogConverter());
-            //var jresult = JsonConvert.DeserializeObject<BuildCarOutputModel>(responseString, settings);
-            //var send = client.Send(new System.Net.Http.HttpRequestMessage { Method = HttpMethod.Post });
 
             Assert.IsTrue(responseString.Contains("\"StripeColor\""));
             Assert.IsFalse(responseString.Contains("\"DotColor\""));
@@ -41,7 +36,7 @@ namespace UnitTests
         [TestMethod]
         public async Task CarController_Post_canHandle_PaintType_stripe()
         {
-            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"stripe\", \"baseColor\": \"Blue\", \"stripeColor\": \"Orange\", \"dotColor\": null }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": [ {\"isSubwoofer\": true }, { \"isSubwoofer\": false } ] } } ] }", Encoding.UTF8, "application/json"));
+            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"stripe\", \"baseColor\": \"Blue\", \"stripeColor\": \"Orange\", \"dotColor\": null }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": { \"numberOfSubWoofers\": 2, \"speakers\": { \"numberOfSpeakers\": 5, \"speakerType\": \"Normal\" } } } } ] }", Encoding.UTF8, "application/json"));
             var responseString = await response.Content.ReadAsStringAsync();
 
             Assert.IsTrue(responseString.Contains("\"StripeColor\""));
@@ -51,7 +46,7 @@ namespace UnitTests
         [TestMethod]
         public async Task CarController_Post_canHandle_PaintType_Dot()
         {
-            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"Dot\", \"baseColor\": \"Blue\", \"stripeColor\": null, \"dotColor\": \"Purple\" }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": [ {\"isSubwoofer\": true }, { \"isSubwoofer\": false } ] } } ] }", Encoding.UTF8, "application/json"));
+            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"Dot\", \"baseColor\": \"Blue\", \"stripeColor\": null, \"dotColor\": \"Purple\" }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": { \"numberOfSubWoofers\": 2, \"speakers\": { \"numberOfSpeakers\": 5, \"speakerType\": \"Normal\" } } } } ] }", Encoding.UTF8, "application/json"));
             var responseString = await response.Content.ReadAsStringAsync();
 
             Assert.IsFalse(responseString.Contains("\"StripeColor\""));
@@ -61,7 +56,7 @@ namespace UnitTests
         [TestMethod]
         public async Task CarController_Post_canHandle_PaintType_dot()
         {
-            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"dot\", \"baseColor\": \"Blue\", \"stripeColor\": null, \"dotColor\": \"Purple\" }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": [ {\"isSubwoofer\": true }, { \"isSubwoofer\": false } ] } } ] }", Encoding.UTF8, "application/json"));
+            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"dot\", \"baseColor\": \"Blue\", \"stripeColor\": null, \"dotColor\": \"Purple\" }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": { \"numberOfSubWoofers\": 2, \"speakers\": { \"numberOfSpeakers\": 5, \"speakerType\": \"Normal\" } } } } ] }", Encoding.UTF8, "application/json"));
             var responseString = await response.Content.ReadAsStringAsync();
 
             Assert.IsFalse(responseString.Contains("\"StripeColor\""));
@@ -71,7 +66,7 @@ namespace UnitTests
         [TestMethod]
         public async Task CarController_Post_canHandle_PaintType_Single()
         {
-            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"Single\", \"baseColor\": \"Blue\", \"stripeColor\": null, \"dotColor\": null }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": [ {\"isSubwoofer\": true }, { \"isSubwoofer\": false } ] } } ] }", Encoding.UTF8, "application/json"));
+            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"Single\", \"baseColor\": \"Blue\", \"stripeColor\": null, \"dotColor\": null }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": { \"numberOfSubWoofers\": 2, \"speakers\": { \"numberOfSpeakers\": 5, \"speakerType\": \"Normal\" } } } } ] }", Encoding.UTF8, "application/json"));
             var responseString = await response.Content.ReadAsStringAsync();
 
             Assert.IsFalse(responseString.Contains("\"StripeColor\""));
@@ -82,7 +77,7 @@ namespace UnitTests
         [TestMethod]
         public async Task CarController_Post_canHandle_PaintType_single()
         {
-            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"single\", \"baseColor\": \"Blue\", \"stripeColor\": null, \"dotColor\": null }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": [ {\"isSubwoofer\": true }, { \"isSubwoofer\": false } ] } } ] }", Encoding.UTF8, "application/json"));
+            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"single\", \"baseColor\": \"Blue\", \"stripeColor\": null, \"dotColor\": null }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": { \"numberOfSubWoofers\": 2, \"speakers\": { \"numberOfSpeakers\": 5, \"speakerType\": \"Normal\" }  } } } ] }", Encoding.UTF8, "application/json"));
             var responseString = await response.Content.ReadAsStringAsync();
 
             Assert.IsFalse(responseString.Contains("\"StripeColor\""));

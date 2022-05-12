@@ -40,7 +40,7 @@ namespace CarFactory
                 options.SerializerSettings.ContractResolver = new DefaultContractResolver();
 
                 // Configure a custom converter
-                options.SerializerSettings.Converters.Add(new CustomJsonConverter());
+                options.SerializerSettings.Converters.Add(new PaintJsonConverter());
             });
             services.AddControllersWithViews()
                 .AddJsonOptions(options =>
