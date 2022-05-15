@@ -12,7 +12,7 @@ namespace CarFactory_Chasis
     {
         private readonly ISteelSubcontractor _steelSubcontractor;
         private readonly IGetChassisRecipeQuery _chassisRecipeQuery;
-        private Object lockObject = new();
+        private object lockObject = new();
 
         public ChassisProvider(ISteelSubcontractor steelSubcontractor, IGetChassisRecipeQuery chassisRecipeQuery)
         {

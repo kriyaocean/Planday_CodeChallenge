@@ -16,7 +16,7 @@ namespace CarFactory_Engine
         private readonly ISteelSubcontractor _steelSubContractor;
         private readonly IGetEngineSpecificationQuery _getEngineSpecification;
         private readonly IMemoryCache _cache; 
-        private Object lockObject = new();
+        private object lockObject = new();
 
         public EngineProvider(IGetPistons getPistons, ISteelSubcontractor steelSubContractor, 
             IGetEngineSpecificationQuery getEngineSpecification, IMemoryCache cache)
