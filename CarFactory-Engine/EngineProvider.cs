@@ -27,7 +27,7 @@ namespace CarFactory_Engine
             _cache = cache;
         }
         
-        public int SteelInventory { get; set; } = 0;
+        public int SteelInventory { get; private set; } = 0;
 
         public Engine GetEngine(Manufacturer manufacturer)
         {
