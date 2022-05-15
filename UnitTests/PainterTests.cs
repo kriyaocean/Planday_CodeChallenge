@@ -1,18 +1,13 @@
-using CarFactory.Controllers;
 using CarFactory_Domain;
 using CarFactory_Domain.Engine;
-using CarFactory_Factory;
 using CarFactory_Paint;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Collections.Generic;
 using System.Drawing;
-using static CarFactory.Controllers.CarController;
 
 namespace UnitTests
 {
-    [TestClass]
+    [TestClass, TestCategory("UnitTests")]
     public class PainterTests
     {
         [TestMethod]

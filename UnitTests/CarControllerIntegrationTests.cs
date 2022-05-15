@@ -1,13 +1,14 @@
 ﻿using CarFactory;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace UnitTests
 {
-    [TestClass, TestCategory("Integration tests")]
+    [TestClass, TestCategory("IntegrationTests")]
     public class CarControllerIntegrationTests
     {
 
@@ -16,9 +17,8 @@ namespace UnitTests
         [ClassInitialize()]
         public static void ClassInit(TestContext context)
         {
-            var s = string.Empty;
             var application = new WebApplicationFactory<Startup>()
-            .WithWebHostBuilder(builder => {  /* ... Configure test services */ });
+            .WithWebHostBuilder(builder => { });
 
             _client = application.CreateClient();
         }
@@ -26,7 +26,9 @@ namespace UnitTests
         [TestMethod]
         public async Task CarController_Post_canHandle_PaintType_Stripe()
         {
-            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"Stripe\", \"baseColor\": \"Blue\", \"stripeColor\": \"Orange\", \"dotColor\": null }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": { \"numberOfSubWoofers\": 2, \"speakers\": { \"numberOfSpeakers\": 5, \"speakerType\": \"Normal\" } } } } ] }", Encoding.UTF8, "application/json")); 
+
+            var jsonObj = CreateJsonString(paintType: "Stripe", baseColor: "Blue", stripeColor: "Orange", dotColor: null);
+            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent(jsonObj, Encoding.UTF8, "application/json")); 
             var responseString = await response.Content.ReadAsStringAsync();
 
             Assert.IsTrue(responseString.Contains("\"StripeColor\""));
@@ -36,7 +38,8 @@ namespace UnitTests
         [TestMethod]
         public async Task CarController_Post_canHandle_PaintType_stripe()
         {
-            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"stripe\", \"baseColor\": \"Blue\", \"stripeColor\": \"Orange\", \"dotColor\": null }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": { \"numberOfSubWoofers\": 2, \"speakers\": { \"numberOfSpeakers\": 5, \"speakerType\": \"Normal\" } } } } ] }", Encoding.UTF8, "application/json"));
+            var jsonObj = CreateJsonString(paintType: "stripe", baseColor: "Blue", stripeColor: "Orange", dotColor: null);
+            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent(jsonObj, Encoding.UTF8, "application/json")); 
             var responseString = await response.Content.ReadAsStringAsync();
 
             Assert.IsTrue(responseString.Contains("\"StripeColor\""));
@@ -46,18 +49,22 @@ namespace UnitTests
         [TestMethod]
         public async Task CarController_Post_canHandle_PaintType_Dot()
         {
-            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"Dot\", \"baseColor\": \"Blue\", \"stripeColor\": null, \"dotColor\": \"Purple\" }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": { \"numberOfSubWoofers\": 2, \"speakers\": { \"numberOfSpeakers\": 5, \"speakerType\": \"Normal\" } } } } ] }", Encoding.UTF8, "application/json"));
+            var jsonObj = CreateJsonString(paintType: "Dot", baseColor: "Blue", stripeColor: null, dotColor: "Gold");
+            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent(jsonObj, Encoding.UTF8, "application/json")); 
             var responseString = await response.Content.ReadAsStringAsync();
+
 
             Assert.IsFalse(responseString.Contains("\"StripeColor\""));
             Assert.IsTrue(responseString.Contains("\"DotColor\""));
         }
 
         [TestMethod]
-        public async Task CarController_Post_canHandle_PaintType_dot()
+        public async Task CarController_Post_canHandle_PaintType_dOT()
         {
-            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"dot\", \"baseColor\": \"Blue\", \"stripeColor\": null, \"dotColor\": \"Purple\" }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": { \"numberOfSubWoofers\": 2, \"speakers\": { \"numberOfSpeakers\": 5, \"speakerType\": \"Normal\" } } } } ] }", Encoding.UTF8, "application/json"));
+            var jsonObj = CreateJsonString(paintType: "dOT", baseColor: "Blue", stripeColor: null, dotColor: "Gold");
+            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent(jsonObj, Encoding.UTF8, "application/json")); 
             var responseString = await response.Content.ReadAsStringAsync();
+
 
             Assert.IsFalse(responseString.Contains("\"StripeColor\""));
             Assert.IsTrue(responseString.Contains("\"DotColor\""));
@@ -66,8 +73,10 @@ namespace UnitTests
         [TestMethod]
         public async Task CarController_Post_canHandle_PaintType_Single()
         {
-            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"Single\", \"baseColor\": \"Blue\", \"stripeColor\": null, \"dotColor\": null }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": { \"numberOfSubWoofers\": 2, \"speakers\": { \"numberOfSpeakers\": 5, \"speakerType\": \"Normal\" } } } } ] }", Encoding.UTF8, "application/json"));
+            var jsonObj = CreateJsonString(paintType: "Single", baseColor: "Blue", stripeColor: null, dotColor: null);
+            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent(jsonObj, Encoding.UTF8, "application/json")); 
             var responseString = await response.Content.ReadAsStringAsync();
+
 
             Assert.IsFalse(responseString.Contains("\"StripeColor\""));
             Assert.IsFalse(responseString.Contains("\"DotColor\""));
@@ -77,12 +86,24 @@ namespace UnitTests
         [TestMethod]
         public async Task CarController_Post_canHandle_PaintType_single()
         {
-            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent("{ \"cars\": [ { \"amount\": 2, \"specification\": { \"numberOfDoors\": 5, \"paint\": { \"type\": \"single\", \"baseColor\": \"Blue\", \"stripeColor\": null, \"dotColor\": null }, \"manufacturer\": \"PlanfaRomeo\", \"frontWindowSpeakers\": { \"numberOfSubWoofers\": 2, \"speakers\": { \"numberOfSpeakers\": 5, \"speakerType\": \"Normal\" }  } } } ] }", Encoding.UTF8, "application/json"));
+            var jsonObj = CreateJsonString(paintType: "SinGle", baseColor: "Blue", stripeColor: null, dotColor: null);
+            HttpResponseMessage response = await _client.PostAsync("/Car", new StringContent(jsonObj, Encoding.UTF8, "application/json")); 
             var responseString = await response.Content.ReadAsStringAsync();
 
             Assert.IsFalse(responseString.Contains("\"StripeColor\""));
             Assert.IsFalse(responseString.Contains("\"DotColor\""));
             Assert.IsTrue(responseString.Contains("\"Color\""));
+        }
+
+        private string CreateJsonString(string paintType, string baseColor, string stripeColor, string dotColor)
+        {
+            object paint = new { type = paintType, baseColor, stripeColor, dotColor };
+            object frontWindowSpeakers = new { numberOfSubWoofers = 1, speakers = new { numberOfSpeakers = 2, speakerType = "Standard" } };
+            object specification = new { numberOfDoors = 5, paint, manufacturer = "PlanfaRomeo", frontWindowSpeakers };
+            object cars = new object[] { new { amount = 2, specification } };
+            object carsObj = new { cars };
+
+            return JsonConvert.SerializeObject(carsObj);
         }
     }
 }

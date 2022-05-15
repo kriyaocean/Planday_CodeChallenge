@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
 using CarFactory.Enum;
-using CarFactory.Helpers;
+using CarFactory.Extensions;
 using CarFactory_Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -10,58 +10,52 @@ using static CarFactory.Controllers.CarController;
 
 namespace UnitTests
 {
-    [TestClass]
-    public class TransformObjectHelper_PaintJob_Tests
+    [TestClass, TestCategory("UnitTests")]
+    public class ConvertToCarSpecifications_PaintJob_Tests
     {
         private static readonly Fixture Fixture = new();
 
         [TestMethod]
-        public void TransformObjectHelper_StripedPaintJob()
+        public void ConvertToCarSpecifications_StripedPaintJob()
         {
             var car = Fixture.Build<BuildCarInputModelItem>().With(x => x.Amount, 1).Create();
             car.Specification.Paint = new CarPaintSpecificationInputModel { BaseColor = "Blue", StripeColor = "Orange", Type = PaintType.Stripe };
             car.Specification.NumberOfDoors = 3;
 
-            var result = TransformObjectHelper.TransformToDomainObjects(new BuildCarInputModel
-            {               
-                Cars = new List<BuildCarInputModelItem> { car }
-            }).ToList();
+            var result = new BuildCarInputModel { Cars = new List<BuildCarInputModelItem> { car } }
+            .ConvertToCarSpecifications().ToList();
 
             Assert.IsInstanceOfType(result[0].PaintJob, typeof(StripedPaintJob));
         }
 
         [TestMethod]
-        public void TransformObjectHelper_DottedPaintJob()
+        public void ConvertToCarSpecifications_DottedPaintJob()
         {
             var car = Fixture.Build<BuildCarInputModelItem>().With(x => x.Amount, 1).Create();
             car.Specification.Paint = new CarPaintSpecificationInputModel { BaseColor = "Green", DotColor = "Yellow", Type = PaintType.Dot };
             car.Specification.NumberOfDoors = 3;
 
-            var result = TransformObjectHelper.TransformToDomainObjects(new BuildCarInputModel
-            {
-                Cars = new List<BuildCarInputModelItem> { car }
-            }).ToList();
+            var result = new BuildCarInputModel { Cars = new List<BuildCarInputModelItem> { car } }
+            .ConvertToCarSpecifications().ToList();
 
             Assert.IsInstanceOfType(result[0].PaintJob, typeof(DottedPaintJob));
         }
 
         [TestMethod]
-        public void TransformObjectHelper_SingleColorPaintJob()
+        public void ConvertToCarSpecifications_SingleColorPaintJob()
         {
             var car = Fixture.Build<BuildCarInputModelItem>().With(x => x.Amount, 1).Create();
             car.Specification.Paint = new CarPaintSpecificationInputModel { BaseColor = "Green", Type = PaintType.Single };
             car.Specification.NumberOfDoors = 3;
 
-            var result = TransformObjectHelper.TransformToDomainObjects(new BuildCarInputModel
-            {
-                Cars = new List<BuildCarInputModelItem> { car }
-            }).ToList();
+            var result = new BuildCarInputModel { Cars = new List<BuildCarInputModelItem> { car } }
+            .ConvertToCarSpecifications().ToList();
 
             Assert.IsInstanceOfType(result[0].PaintJob, typeof(SingleColorPaintJob));
         }
 
         [TestMethod]
-        public void TransformObjectHelper_MultipleSpecifications_CreatesCorrectNumberOfInstances()
+        public void ConvertToCarSpecifications_MultipleSpecifications_CreatesCorrectNumberOfInstances()
         {
             var car1 = Fixture.Build<BuildCarInputModelItem>().With(x => x.Amount, 2).Create();
             car1.Specification.Paint = new CarPaintSpecificationInputModel { BaseColor = "Green", Type = PaintType.Single };
@@ -75,10 +69,8 @@ namespace UnitTests
             car3.Specification.Paint = new CarPaintSpecificationInputModel { BaseColor = "Pink", DotColor = "Purple", Type = PaintType.Dot };
             car3.Specification.NumberOfDoors = 3;
 
-            var result = TransformObjectHelper.TransformToDomainObjects(new BuildCarInputModel
-            {
-                Cars = new List<BuildCarInputModelItem> { car1, car2, car3 }
-            });
+            var result = new BuildCarInputModel { Cars = new List<BuildCarInputModelItem> { car1, car2, car3 } }
+            .ConvertToCarSpecifications();
 
             var totalAmount = car1.Amount + car2.Amount + car3.Amount;
 
@@ -93,29 +85,27 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TransformObjectHelper_UnknownPaintType_Throws()
+        public void ConvertToCarSpecifications_UnknownPaintType_Throws()
         {
             var car = Fixture.Build<BuildCarInputModelItem>().With(x => x.Amount, 1).Create();
             car.Specification.Paint = new CarPaintSpecificationInputModel { BaseColor = "Green", Type = default };
             car.Specification.NumberOfDoors = 3;
 
-            Assert.ThrowsException<ArgumentException>(() => TransformObjectHelper.TransformToDomainObjects(new BuildCarInputModel
-            {
-                Cars = new List<BuildCarInputModelItem> { car }
-            }));
+            Assert.ThrowsException<ArgumentException>(
+                () => new BuildCarInputModel { Cars = new List<BuildCarInputModelItem> { car } }
+            .ConvertToCarSpecifications());
         }
 
         [TestMethod]
-        public void TransformObjectHelper_Throws_OnEvenNumberOfDoors()
+        public void TConvertToCarSpecifications_Throws_OnEvenNumberOfDoors()
         {
             // should probably throw on odd number of doors in stead
             var car = Fixture.Build<BuildCarInputModelItem>().With(x => x.Amount, 1).Create();
             car.Specification.NumberOfDoors = 4;
 
-            Assert.ThrowsException<ArgumentException>(() => TransformObjectHelper.TransformToDomainObjects(new BuildCarInputModel
-            {
-                Cars = new List<BuildCarInputModelItem> { car }
-            }));
+            Assert.ThrowsException<ArgumentException>(
+                () => new BuildCarInputModel { Cars = new List<BuildCarInputModelItem> { car } }
+            .ConvertToCarSpecifications());
         }
     }
 }

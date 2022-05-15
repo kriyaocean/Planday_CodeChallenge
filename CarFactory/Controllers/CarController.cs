@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using CarFactory.Enum;
-using CarFactory.Helpers;
+using CarFactory.Extensions;
 using CarFactory_Domain;
 using CarFactory_Factory;
 using Microsoft.AspNetCore.Http;
@@ -25,7 +25,7 @@ namespace CarFactory.Controllers
         public object Post([FromBody][Required] BuildCarInputModel carsSpecs)
         {
 
-            var wantedCars = TransformObjectHelper.TransformToDomainObjects(carsSpecs);
+            var wantedCars = carsSpecs.ConvertToCarSpecifications();
             //Build cars
             var stopwatch = new Stopwatch();
             stopwatch.Start();

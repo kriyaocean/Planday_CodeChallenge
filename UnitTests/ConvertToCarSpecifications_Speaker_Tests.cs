@@ -1,22 +1,19 @@
 ﻿using AutoFixture;
-using CarFactory.Helpers;
+using CarFactory.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static CarFactory.Controllers.CarController;
 
 namespace UnitTests
 {
-    [TestClass]
-    public class TransformObjectHelper_Speaker_Tests
+    [TestClass, TestCategory("UnitTests")]
+    public class ConvertToCarSpecifications_Speaker_Tests
     {
         private static readonly Fixture Fixture = new();
 
         [TestMethod]
-        public void TransformObjectHelper_CreatesTheRightAmountOfSpeakerInstances()
+        public void ConvertToCarSpecifications_CreatesTheRightAmountOfSpeakerInstances()
         {
             var car = Fixture.Build<BuildCarInputModelItem>().With(x => x.Amount, 1).Create();
             car.Specification.FrontWindowSpeakers = new SpeakerSpecificationInputModel {
@@ -29,10 +26,8 @@ namespace UnitTests
             };
             car.Specification.NumberOfDoors = 3;
 
-            var result = TransformObjectHelper.TransformToDomainObjects(new BuildCarInputModel
-            {
-                Cars = new List<BuildCarInputModelItem> { car }
-            }).ToList();
+            var result = new BuildCarInputModel { Cars = new List<BuildCarInputModelItem> { car } }
+            .ConvertToCarSpecifications().ToList();
 
             var fwsp_standard = result[0].FrontWindowSpeakers.Where(x => x.SpeakerType == CarFactory_Factory.SpeakerSpecType.Standard).Count();
             var fwsp_sub = result[0].FrontWindowSpeakers.Where(x => x.SpeakerType == CarFactory_Factory.SpeakerSpecType.SubWoofer).Count();
@@ -46,7 +41,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TransformObjectHelper_CanHandleNull_FrondWindowSpeakers()
+        public void ConvertToCarSpecifications_CanHandleNull_FrondWindowSpeakers()
         {
             var car = Fixture.Build<BuildCarInputModelItem>().With(x => x.Amount, 1).Create();
             car.Specification.FrontWindowSpeakers = null;
@@ -57,10 +52,8 @@ namespace UnitTests
             };
             car.Specification.NumberOfDoors = 3;
 
-            var result = TransformObjectHelper.TransformToDomainObjects(new BuildCarInputModel
-            {
-                Cars = new List<BuildCarInputModelItem> { car }
-            }).ToList();
+            var result = new BuildCarInputModel { Cars = new List<BuildCarInputModelItem> { car } }
+            .ConvertToCarSpecifications().ToList();
 
             var fwsp = result[0].FrontWindowSpeakers.Count();
             var dsp_normal = result[0].DoorSpeakers.Where(x => x.SpeakerType == CarFactory_Factory.SpeakerSpecType.Normal).Count();
@@ -72,7 +65,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TransformObjectHelper_CanHandleNull_DoorSpeakers()
+        public void ConvertToCarSpecifications_CanHandleNull_DoorSpeakers()
         {
             var car = Fixture.Build<BuildCarInputModelItem>().With(x => x.Amount, 1).Create();
             car.Specification.FrontWindowSpeakers = new SpeakerSpecificationInputModel
@@ -83,10 +76,8 @@ namespace UnitTests
             car.Specification.DoorSpeakers = null;
             car.Specification.NumberOfDoors = 3;
 
-            var result = TransformObjectHelper.TransformToDomainObjects(new BuildCarInputModel
-            {
-                Cars = new List<BuildCarInputModelItem> { car }
-            }).ToList();
+            var result = new BuildCarInputModel { Cars = new List<BuildCarInputModelItem> { car } }
+            .ConvertToCarSpecifications().ToList();
 
             var fwsp_standard = result[0].FrontWindowSpeakers.Where(x => x.SpeakerType == CarFactory_Factory.SpeakerSpecType.Standard).Count();
             var fwsp_sub = result[0].FrontWindowSpeakers.Where(x => x.SpeakerType == CarFactory_Factory.SpeakerSpecType.SubWoofer).Count();
@@ -98,17 +89,15 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TransformObjectHelper_CanHandleNull_Speakers()
+        public void ConvertToCarSpecifications_CanHandleNull_Speakers()
         {
             var car = Fixture.Build<BuildCarInputModelItem>().With(x => x.Amount, 1).Create();
             car.Specification.FrontWindowSpeakers = null;
             car.Specification.DoorSpeakers = null;
             car.Specification.NumberOfDoors = 3;
 
-            var result = TransformObjectHelper.TransformToDomainObjects(new BuildCarInputModel
-            {
-                Cars = new List<BuildCarInputModelItem> { car }
-            }).ToList();
+            var result = new BuildCarInputModel { Cars = new List<BuildCarInputModelItem> { car } }
+            .ConvertToCarSpecifications().ToList();
 
             var fwsp = result[0].FrontWindowSpeakers.Count();
             var dsp = result[0].DoorSpeakers.Count();

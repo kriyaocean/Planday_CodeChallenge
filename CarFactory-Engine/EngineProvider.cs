@@ -1,14 +1,12 @@
 ﻿using CarFactory.Utilities;
 using CarFactory_Domain;
 using CarFactory_Domain.Engine;
-using CarFactory_Domain.Engine.EngineSpecifications;
 using CarFactory_Factory;
 using CarFactory_Storage;
 using CarFactory_SubContractor;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Linq;
-using System.Threading;
 
 namespace CarFactory_Engine
 {
@@ -16,9 +14,9 @@ namespace CarFactory_Engine
     {
         private readonly IGetPistons _getPistons;
         private readonly ISteelSubcontractor _steelSubContractor;
-        private int SteelInventory = 0;
         private readonly IGetEngineSpecificationQuery _getEngineSpecification;
-        private readonly IMemoryCache _cache;
+        private readonly IMemoryCache _cache; 
+        private Object lockObject = new();
 
         public EngineProvider(IGetPistons getPistons, ISteelSubcontractor steelSubContractor, 
             IGetEngineSpecificationQuery getEngineSpecification, IMemoryCache cache)
@@ -28,7 +26,8 @@ namespace CarFactory_Engine
             _getEngineSpecification = getEngineSpecification ;
             _cache = cache;
         }
-
+        
+        public int SteelInventory { get; set; } = 0;
 
         public Engine GetEngine(Manufacturer manufacturer)
         {
@@ -55,9 +54,8 @@ namespace CarFactory_Engine
         private EngineBlock MakeEngineBlock(int cylinders)
         {
             var requiredSteel = cylinders * EngineBlock.RequiredSteelPerCylinder;
-
+            
             var steel = GetSteel(requiredSteel);
-
             var engineBlock = new EngineBlock(steel);
 
             if (cylinders != engineBlock.CylinderCount)
@@ -66,17 +64,18 @@ namespace CarFactory_Engine
             return engineBlock;
         }
 
-
         private int GetSteel(int amount)
         {
-            if(amount > SteelInventory)
+            lock (lockObject)
             {
-                var missingSteel = amount - SteelInventory;
-                SteelInventory += _steelSubContractor.OrderSteel(missingSteel).Sum(sd => sd.Amount);
-            }
+                if(amount > SteelInventory)
+                {
+                    var missingSteel = amount - SteelInventory;
+                    SteelInventory += _steelSubContractor.OrderSteel(missingSteel).Sum(sd => sd.Amount);
+                }
 
-            SteelInventory -= amount;
-
+                SteelInventory -= amount;
+            }           
             return amount;
         }
 

@@ -1,7 +1,6 @@
 ﻿using CarFactory_Domain;
-using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Threading.Tasks;
 
 namespace CarFactory_Factory
 {
@@ -36,7 +35,8 @@ namespace CarFactory_Factory
         public IEnumerable<Car> BuildCars(IEnumerable<CarSpecification> specs)
         {
             var cars = new List<Car>();
-            foreach(var spec in specs)
+
+            Parallel.ForEach(specs, spec =>
             {
                 var chassis = _chassisProvider.GetChassis(spec.Manufacturer, spec.NumberOfDoors);
                 var engine = _engineProvider.GetEngine(spec.Manufacturer);
@@ -45,7 +45,8 @@ namespace CarFactory_Factory
                 var car = _carAssembler.AssembleCar(chassis, engine, interior, wheels);
                 var paintedCar = _painter.PaintCar(car, spec.PaintJob);
                 cars.Add(paintedCar);
-            }
+            });
+
             return cars;
         }
     }

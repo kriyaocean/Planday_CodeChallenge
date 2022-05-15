@@ -8,7 +8,7 @@ using static CarFactory_Factory.CarSpecification;
 
 namespace UnitTests
 {
-    [TestClass]
+    [TestClass, TestCategory("UnitTests")]
     public class SpeakerBuilderTests
     {
         [TestMethod]

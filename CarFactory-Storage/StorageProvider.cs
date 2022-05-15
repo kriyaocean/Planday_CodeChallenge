@@ -1,25 +1,42 @@
 ﻿using CarFactory_Factory;
 using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 using CarFactory_Domain;
-using System.Threading;
 using CarFactory_Domain.Engine.EngineSpecifications;
+using System.Threading;
 
 namespace CarFactory
 {
     public class StorageProvider : IStorageProvider
     {
+        // in stead of utilizing the double checked locking pattern here
+        // the database could be initialized during application startup
+        private static object lockObject = new object();
+        private static bool _dbIsInitialized = false;
         public SQLiteConnection GetConnection()
         {
-            var firstRun = !File.Exists("factory.sqlite");
             var conn = new SQLiteConnection(@"Data Source=factory.sqlite;Pooling=true;FailIfMissing=false");
             conn.Open();
-            if (firstRun)
+
+            if (!_dbIsInitialized)
             {
-                CreateMissingTables(conn);
-                AddData(conn);
+                lock (lockObject)
+                {
+                    if (!_dbIsInitialized)
+                    {
+                        if (File.Exists("factory.sqlite") && new FileInfo("factory.sqlite").Length != 0)
+                        {
+                            _dbIsInitialized = true;
+                        }
+                        else
+                        {
+                            CreateMissingTables(conn);
+                            AddData(conn);
+                            _dbIsInitialized = true;
+                        }
+                    }
+                }
             }
             return conn;
         }
@@ -27,7 +44,7 @@ namespace CarFactory
         private static void CreateMissingTables(SQLiteConnection conn)
         {
             using var cmd = new SQLiteCommand(conn);
-            
+
             cmd.CommandText = @"CREATE TABLE part(id INTEGER PRIMARY KEY, type TEXT)";
             cmd.ExecuteNonQuery();
 
@@ -71,13 +88,14 @@ namespace CarFactory
             InsertChassisRecipe(conn, Manufacturer.PlanfaRomeo, 2, 50, 1, 75, 0, 50);
             InsertChassisRecipe(conn, Manufacturer.PlandayMotorWorks, 1, 60, 0, 75, 1, 75);
             InsertChassisRecipe(conn, Manufacturer.AstonPlanday, 0, 100, 1, 75, 0, 75);
+            InsertChassisRecipe(conn, Manufacturer.Volksday, 1, 50, 0, 75, 0, 75);
 
             InsertEngineSpecification(conn, Manufacturer.AstonPlanday, new GasolineV12());
             InsertEngineSpecification(conn, Manufacturer.Planborghini, new GasolineV12());
             InsertEngineSpecification(conn, Manufacturer.PlandayMotorWorks, new DieselStraight4());
             InsertEngineSpecification(conn, Manufacturer.Plandrover, new GasolineV8());
             InsertEngineSpecification(conn, Manufacturer.PlanfaRomeo, new GasolineV6());
-
+            InsertEngineSpecification(conn, Manufacturer.Volksday, new GasolineV6());
         }
 
         private static void InsertPart(SQLiteConnection conn, Manufacturer manufacturer, PartType partType, int amount)
@@ -101,7 +119,7 @@ namespace CarFactory
         private static void InsertEngineSpecification(SQLiteConnection conn, Manufacturer manufacturer, EngineSpecification specification)
         {
             using var cmd = new SQLiteCommand(conn);
-            cmd.CommandText = $"INSERT INTO engine_specification(manufacturerId, cylinderCount, propulsion, specificationName) VALUES({(int) manufacturer},{specification.CylinderCount},{(int) specification.PropulsionType},'{specification.Name}')";
+            cmd.CommandText = $"INSERT INTO engine_specification(manufacturerId, cylinderCount, propulsion, specificationName) VALUES({(int)manufacturer},{specification.CylinderCount},{(int)specification.PropulsionType},'{specification.Name}')";
             cmd.ExecuteNonQuery();
         }
     }

@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System;
 
-namespace CarFactory.Formatter
+namespace CarFactory.Formatters
 {
     public class PaintJsonConverter : JsonConverter
     {

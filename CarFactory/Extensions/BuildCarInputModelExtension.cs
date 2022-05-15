@@ -7,11 +7,11 @@ using System.Drawing;
 using static CarFactory.Controllers.CarController;
 using static CarFactory_Factory.CarSpecification;
 
-namespace CarFactory.Helpers
+namespace CarFactory.Extensions
 {
-    public static class TransformObjectHelper
+    public static class BuildCarInputModelExtension
     {
-        public static IEnumerable<CarSpecification> TransformToDomainObjects(BuildCarInputModel carsSpecs)
+        public static IEnumerable<CarSpecification> ConvertToCarSpecifications(this BuildCarInputModel carsSpecs)
         {
             //Check and transform specifications to domain objects
             var wantedCars = new List<CarSpecification>();
@@ -60,7 +60,7 @@ namespace CarFactory.Helpers
             }
             for (int i = 0; i < inputSpeakers.Speakers.NumberOfSpeakers; i++)
             {
-                speakerList.Add(new SpeakerSpecification { SpeakerType = inputSpeakers.Speakers.SpeakerType.Convert() });
+                speakerList.Add(new SpeakerSpecification { SpeakerType = inputSpeakers.Speakers.SpeakerType.ConvertToSpeakerSpecType() });
             }
 
             return speakerList;
