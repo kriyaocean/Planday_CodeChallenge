@@ -4,37 +4,33 @@ using System.Linq;
 using CarFactory_Domain;
 using CarFactory_Factory;
 using CarFactory_Storage;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace CarFactory_Wheels
 {
     public class WheelProvider : IWheelProvider
     {
         private readonly IGetRubberQuery _getRubberQuery;
-        private readonly IMemoryCache _cache;
 
-        public WheelProvider(IGetRubberQuery getRubberQuery, IMemoryCache cache)
+        public WheelProvider(IGetRubberQuery getRubberQuery)
         {
             _getRubberQuery = getRubberQuery;
-            _cache = cache; 
         }
-
+        0
         public IEnumerable<Wheel> GetWheels()
         {
-            _cache.TryGetValue(CacheKeys.Materials, out IEnumerable<Part> parts);
-            if (parts == null)
+            var parts = _getRubberQuery.Get();
+            return CreateWheels(4, ref parts);
+        }
+
+        private Wheel[] CreateWheels(int numberOfWheels, ref IEnumerable<Part> parts)
+        {
+            var wheelArr = new Wheel[numberOfWheels];
+            for (int i = 0; i < numberOfWheels; i++)
             {
-                parts = _getRubberQuery.Get();
-                _cache.Set(CacheKeys.Materials, parts, DateTime.Now.AddDays(1));
+                wheelArr[i] = CreateWheel(ref parts);
             }
 
-            return new[]
-            {
-                CreateWheel(ref parts),
-                CreateWheel(ref parts),
-                CreateWheel(ref parts),
-                CreateWheel(ref parts)
-            };
+            return wheelArr;
         }
 
         private Wheel CreateWheel(ref IEnumerable<Part> allRubber)
@@ -47,7 +43,7 @@ namespace CarFactory_Wheels
                 throw new Exception("parts must be rubber");
             }
             
-            return new Wheel(){Manufacturer = rubber.First().Manufacturer};
+            return new Wheel() { Manufacturer = rubber.First().Manufacturer };
         }
     }
 }

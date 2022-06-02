@@ -1,4 +1,4 @@
-﻿namespace CarFactory_Factory
+﻿namespace CarFactory_Domain
 {
     public static class CacheKeys
     {

@@ -1,4 +1,5 @@
 ﻿using CarFactory_Domain;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -34,7 +35,7 @@ namespace CarFactory_Factory
 
         public IEnumerable<Car> BuildCars(IEnumerable<CarSpecification> specs)
         {
-            var cars = new List<Car>();
+            var cars = new ConcurrentBag<Car>();
 
             Parallel.ForEach(specs, spec =>
             {

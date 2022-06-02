@@ -68,13 +68,22 @@ namespace CarFactory
             services.AddTransient<IStorageProvider, StorageProvider>();
             services.AddScoped<IEngineProvider, EngineProvider>();
             services.AddScoped<ISteelSubcontractor, SteelSubcontractor>();
-            services.AddScoped<IGetRubberQuery,GetRubberQuery>();
             services.AddScoped<IDashboardBuilder, DashboardBuilder>();
             services.AddScoped<ISeatBuilder, SeatBuilder>();
             services.AddScoped<ISpeakerBuilder, SpeakerBuilder>();
             services.AddScoped<IGetPistons, GetPistons>();
             services.AddScoped<IGetChassisRecipeQuery, GetChassisRecipeQuery>();
             services.AddScoped<IGetEngineSpecificationQuery, GetEngineSpecificationQuery>();
+            services.AddScoped<GetRubberQuery>();
+            services.AddScoped(servicesProvider =>
+            {
+                var memCache = servicesProvider.GetService<IMemoryCache>();
+                var getRubberQueryService = servicesProvider.GetRequiredService<GetRubberQuery>();
+
+                IGetRubberQuery partCache = new CachedParts(getRubberQueryService, memCache);
+
+                return partCache;
+            });
 
         }
 
